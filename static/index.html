@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ana Rosa Nascimento — Estatística e Ciência de Dados | Portfólio de projetos</title>
+<meta name="description" content="Portfólio de projetos de Ana Rosa Nascimento — Estatística e Ciência de Dados (USP). Python, R, SQL, aprendizado de máquina, análise de sobrevivência e visualização de dados.">
+<meta name="author" content="Ana Rosa Nascimento">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://aninha-do-ceu.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Ana Rosa Nascimento">
+<meta property="og:title" content="Ana Rosa Nascimento — Estatística e Ciência de Dados">
+<meta property="og:description" content="Projetos em Python, R e SQL: análise de sobrevivência, modelos lineares generalizados, aprendizado de máquina e visualização de dados.">
+<meta property="og:url" content="https://aninha-do-ceu.github.io/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ana Rosa Nascimento — Estatística e Ciência de Dados">
+<meta name="twitter:description" content="Projetos em Python, R e SQL: análise de sobrevivência, modelos lineares generalizados, aprendizado de máquina e visualização de dados.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ana Rosa Nascimento",
+  "url": "https://aninha-do-ceu.github.io/",
+  "description": "Estudante de Estatística e Ciência de Dados no ICMC-USP. Projetos em Python, R e SQL.",
+  "affiliation": { "@type": "CollegeOrUniversity", "name": "Instituto de Ciências Matemáticas e de Computação (ICMC), Universidade de São Paulo" },
+  "knowsAbout": ["Estatística", "Ciência de Dados", "Análise de sobrevivência", "Modelos lineares generalizados", "Aprendizado de máquina", "Python", "R", "SQL"],
+  "sameAs": ["https://github.com/aninha-do-ceu", "https://www.linkedin.com/in/ana-rosa-nascimento"]
+}
+</script>
+<style>
+  :root {
+    --bg: #f6f8fa;
+    --card: #ffffff;
+    --text: #1f2328;
+    --muted: #656d76;
+    --accent: #0969da;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2.5rem 1rem 3rem;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  header { margin-bottom: 2rem; }
+  h1 { font-size: 1.75rem; letter-spacing: -0.02em; }
+  .subtitle { color: var(--muted); margin-top: .35rem; font-size: .95rem; }
+  .subtitle a { color: var(--accent); text-decoration: none; }
+  .subtitle a:hover { text-decoration: underline; }
+  h2 {
+    font-size: 1.05rem;
+    margin: 2rem 0 .9rem;
+    padding-bottom: .35rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h2 .count { color: var(--muted); font-weight: 400; font-size: .85rem; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: .8rem; }
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .9rem 1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .card:hover { border-color: var(--accent); box-shadow: 0 1px 6px rgba(9,105,218,.12); }
+  .card h3 { font-size: .98rem; font-weight: 600; }
+  .card h3 a { color: var(--accent); text-decoration: none; }
+  .card h3 a:hover { text-decoration: underline; }
+  .card .desc { color: var(--muted); font-size: .86rem; margin: .2rem 0 .5rem; flex: 1; }
+  .meta { display: flex; align-items: center; gap: .55rem; font-size: .76rem; color: var(--muted); flex-wrap: wrap; }
+  .lang { display: inline-flex; align-items: center; gap: .3rem; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .topic {
+    display: inline-block;
+    padding: .02rem .45rem;
+    border-radius: 999px;
+    background: #ddf4ff;
+    color: var(--accent);
+    font-size: .72rem;
+  }
+  .demo {
+    display: inline-block;
+    margin-top: .5rem;
+    font-size: .8rem;
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .demo:hover { text-decoration: underline; }
+  .star { color: #e3b341; font-size: .85rem; }
+
+  .featured .card { border-color: #d4b10655; background: #fffdf5; }
+  .featured .card:hover { border-color: #9e6a03; }
+
+  .toolbar { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin: .9rem 0 1rem; }
+  .chip {
+    padding: .18rem .65rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--muted);
+    font-size: .78rem;
+    cursor: pointer;
+  }
+  .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .chip .n { opacity: .7; }
+  .search {
+    margin-left: auto;
+    padding: .3rem .7rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: .82rem;
+    background: var(--card);
+    color: var(--text);
+    min-width: 200px;
+  }
+  .search:focus { outline: none; border-color: var(--accent); }
+
+  .status { color: var(--muted); font-size: .88rem; padding: 1rem 0; }
+  .error-box {
+    background: #fff8f6;
+    border: 1px solid #ffab8a55;
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    font-size: .88rem;
+  }
+  footer {
+    margin-top: 2.5rem;
+    color: var(--muted);
+    font-size: .82rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Ana Rosa Nascimento</h1>
+    <p class="subtitle">
+      Estatística e Ciência de Dados · ICMC-USP · projetos em
+      <strong>Python, R, SQL</strong> e visualização de dados ·
+      <a href="https://github.com/aninha-do-ceu" target="_blank" rel="noopener">GitHub</a> ·
+      <a href="https://www.linkedin.com/in/ana-rosa-nascimento" target="_blank" rel="noopener">LinkedIn</a> ·
+      <a href="mailto:rosa.nascialmeida@gmail.com">e-mail</a>
+    </p>
+  </header>
+
+  <!-- CASES:START -->
+  <!-- CASES:END -->
+
+<div class="grid"><article class="card"><h3><a href="projetos/modelos-lineares-generalizados/">Modelos Lineares Generalizados</a></h3><p class="desc">Atividades desenvolvidas nas disciplinas de MLG: Modelos de contagem, dados positivos e Modelos de Dose–resposta e Regressão Binária.</p><div class="meta"><span class="topic">R</span><span class="topic">Dados de contagem</span><span class="topic">Binomial negativa</span><span class="topic">Dose–resposta</span></div></article></div>
+
+  <h2>Projetos em destaque <span class="star">★</span></h2>
+  <div class="grid featured" id="featured"></div>
+
+  <h2>Todos os projetos <span class="count" id="count"></span></h2>
+  <div class="toolbar">
+    <div id="chips" style="display:flex; gap:.4rem; flex-wrap:wrap;"></div>
+    <input class="search" id="search" type="search" placeholder="Buscar projeto…" aria-label="Buscar projeto">
+  </div>
+  <div class="grid" id="repos"></div>
+  <div class="status" id="status">Carregando projetos do GitHub…</div>
+
+  <footer>
+    Página gerada dinamicamente a partir da API pública do GitHub ·
+    confira também a <a href="https://aninha-do-ceu.github.io/mapas-disque100-HT/">galeria de mapas interativos</a> ·
+    código desta página no <a href="https://github.com/aninha-do-ceu/aninha-do-ceu.github.io">GitHub</a>.
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var USER = 'aninha-do-ceu';
+    var API = 'https://api.github.com/users/' + USER + '/repos?per_page=100&sort=updated';
+    var CACHE_KEY = 'gh-repos-cache-v1';
+    var CACHE_TTL = 60 * 60 * 1000; /* 1 hora */
+
+    /* Repos que não entram na lista */
+    var EXCLUDE = {};
+    EXCLUDE[USER] = 1;                        /* repo de perfil */
+    EXCLUDE[USER + '.github.io'] = 1;         /* este próprio site */
+    EXCLUDE['aws-elastic-beanstalk-express-js-sample'] = 1;
+
+    /* Descrições amigáveis para repos sem descrição — edite à vontade */
+    var OVERRIDES = {
+      'analise-de-sobrevivencia': 'Análise de sobrevivência aplicada ao tráfico humano no Brasil: censura intervalar, Turnbull, GAMLSS e riscos proporcionais (icenReg). Publicado no 26º SINAPE.',
+      'project-HT': 'Coleta e análise de notícias de tráfico humano em portais brasileiros: web scraping, embeddings e classificação com XGBoost, SVM e regressão logística. Projeto de pesquisa (USP).',
+      'multitouch-attribution-estudo': 'Marketing analytics: modelos de sobrevivência (Kaplan-Meier, Cox, Weibull), GAM para conversão e atribuição multitoque via cadeias de Markov.',
+      'modelos-lineares-generalizados': 'Modelagem do absenteísmo escolar com GLMs (Poisson, quasi-Poisson e binomial negativa): seleção por AIC/LRT, diagnóstico e validação cruzada.',
+      'mapas-disque100-HT': 'Galeria de mapas e visualizações interativas (Folium e Plotly): denúncias do Disque 100, ENEM por estado e PCA 3D com clusters.',
+      'pratica-ciencia-de-dados': 'Práticas de ciência de dados: mapas do ENEM, PCA 3D interativo e análise exploratória.',
+      'projeto-disciplina-mlg': 'Projeto da disciplina de Modelos Lineares Generalizados, com relatório publicado no GitHub Pages.',
+      'Extraction_infos_HT': 'Extração e organização de informações de notícias sobre tráfico humano (web scraping).',
+      'Crawler_HT': 'Crawler para coleta de notícias em portais brasileiros.',
+      'analise-disque100-HT': 'Análises dos dados do Disque 100 sobre denúncias de tráfico humano.',
+      'desafio-analise-quant': 'Resolução de desafio de análise quantitativa.',
+      'estatistica-computacional': 'Estudos e implementações da disciplina de Estatística Computacional.',
+      'processos-estocasticos': 'Exercícios e simulações da disciplina de Processos Estocásticos.',
+      'inferencia-estatistica': 'Exercícios da disciplina de Inferência Estatística.',
+      'inferencia-bayesiana': 'Estudos e implementações da disciplina de Inferência Bayesiana.',
+      'introducao-ciencia-dados': 'Anotações e exercícios de Introdução à Ciência de Dados.',
+      'metodologia_cientifica': 'Atividades da disciplina de Metodologia Científica.',
+      'estudo_sql': 'Estudos e consultas em SQL.',
+      'estudo_modulos_python': 'Estudos de módulos e bibliotecas de Python.',
+      'modelagem': 'Exercícios de modelagem estatística.',
+      'estatistica': 'Exercícios e estudos de estatística.',
+      'modelagem_matematica': 'Atividades da disciplina de Modelagem Matemática.',
+      'Regressao_linear': 'Códigos de regressão linear desenvolvidos na disciplina de Laboratório de Física.',
+      'Pyspark_B': 'Comandos e manipulação de grandes bases com PySpark.',
+      'Automacao_selenium': 'Estudos de automação e web scraping com Selenium em Python.'
+    };
+
+    /* Links de demonstração (páginas publicadas) */
+    var DEMO_LINKS = {
+      'mapas-disque100-HT': 'https://aninha-do-ceu.github.io/mapas-disque100-HT/',
+      'projeto-disciplina-mlg': 'https://aninha-do-ceu.github.io/projeto-disciplina-mlg/'
+    };
+
+    /* Páginas de estudo de caso (metodologia, dados e resultados) */
+    /* gerado por build-site/build.py a partir dos .md — não edite entre os marcadores */
+    /* CASES_MAP:START */
+    /* CASES_MAP:END */
+
+    var LANG_COLORS = {
+      'Python': '#3572A5', 'R': '#198CE7', 'Jupyter Notebook': '#DA5B0B',
+      'HTML': '#e34c26', 'JavaScript': '#f1e051', 'C': '#555555',
+      'SQL': '#e38c00', 'TeX': '#3D6117'
+    };
+
+    var FEATURED = ['analise-de-sobrevivencia', 'project-HT', 'multitouch-attribution-estudo',
+                    'modelos-lineares-generalizados', 'mapas-disque100-HT'];
+
+    var repos = [];
+    var activeLang = 'Todos';
+    var query = '';
+
+    function esc(s) {
+      return String(s || '').replace(/[&<>"']/g, function (c) {
+        return { '&': '&', '<': '<', '>': '>', '"': '"', "'": '&#39;' }[c];
+      });
+    }
+    function fmtDate(iso) {
+      try {
+        return new Date(iso).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }).replace('.', '');
+      } catch (e) { return ''; }
+    }
+    function desc(r) { return OVERRIDES[r.name] || r.description || 'Sem descrição — confira o código no repositório.'; }
+
+    function cardHTML(r, featured) {
+      var lang = r.language ? '<span class="lang"><span class="dot" style="background:' + (LANG_COLORS[r.language] || '#ccc') + '"></span>' + esc(r.language) + '</span>' : '';
+      var topics = (r.topics || []).slice(0, 3).map(function (t) { return '<span class="topic">' + esc(t) + '</span>'; }).join(' ');
+      var extras = '';
+      if (DEMO_LINKS[r.name]) extras += '<a class="demo" href="' + DEMO_LINKS[r.name] + '" target="_blank" rel="noopener">▶ Ver demonstração</a>';
+      if (CASE_PAGES[r.name]) extras += '<a class="demo" href="' + CASE_PAGES[r.name] + '">📖 Estudo de caso: metodologia e resultados</a>';
+      return '<article class="card">' +
+        '<h3><a href="https://github.com/' + USER + '/' + esc(r.name) + '" target="_blank" rel="noopener">' +
+        (featured ? '<span class="star">★</span> ' : '') + esc(r.name) + '</a></h3>' +
+        '<p class="desc">' + esc(desc(r)) + '</p>' +
+        '<div class="meta">' + lang + (r.language ? '<span>·</span>' : '') +
+        '<span>atualizado em ' + fmtDate(r.pushed_at) + '</span>' + topics + '</div>' + extras +
+        '</article>';
+    }
+
+    function renderFeatured() {
+      var el = document.getElementById('featured');
+      var picks = FEATURED.map(function (n) {
+        return repos.filter(function (r) { return r.name === n; })[0];
+      }).filter(Boolean);
+      el.innerHTML = picks.map(function (r) { return cardHTML(r, true); }).join('');
+    }
+
+    function renderChips() {
+      var counts = {};
+      repos.forEach(function (r) { if (r.language) counts[r.language] = (counts[r.language] || 0) + 1; });
+      var langs = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
+      var html = ['<button class="chip active" data-lang="Todos">Todos <span class="n">(' + repos.length + ')</span></button>'];
+      langs.forEach(function (l) {
+        html.push('<button class="chip" data-lang="' + esc(l) + '">' + esc(l) + ' <span class="n">(' + counts[l] + ')</span></button>');
+      });
+      var el = document.getElementById('chips');
+      el.innerHTML = html.join('');
+      el.querySelectorAll('.chip').forEach(function (c) {
+        c.addEventListener('click', function () {
+          activeLang = c.dataset.lang;
+          el.querySelectorAll('.chip').forEach(function (x) { x.classList.toggle('active', x === c); });
+          renderRepos();
+        });
+      });
+    }
+
+    function renderRepos() {
+      var q = query.toLowerCase();
+      var list = repos.filter(function (r) {
+        var okLang = activeLang === 'Todos' || r.language === activeLang;
+        var okQ = !q || (r.name + ' ' + desc(r)).toLowerCase().indexOf(q) !== -1;
+        return okLang && okQ;
+      });
+      document.getElementById('repos').innerHTML = list.map(function (r) { return cardHTML(r, false); }).join('');
+      document.getElementById('count').textContent = '(' + list.length + ')';
+      document.getElementById('status').style.display = 'none';
+    }
+
+    function renderAll() {
+      renderFeatured();
+      renderChips();
+      renderRepos();
+    }
+
+    document.getElementById('search').addEventListener('input', function (e) {
+      query = e.target.value.trim();
+      renderRepos();
+    });
+
+    function normalize(list) {
+      return list.filter(function (r) { return !r.fork && !EXCLUDE[r.name]; })
+        .map(function (r) {
+          return { name: r.name, description: r.description, language: r.language,
+                   topics: r.topics || [], pushed_at: r.pushed_at };
+        })
+        .sort(function (a, b) { return (b.pushed_at || '').localeCompare(a.pushed_at || ''); });
+    }
+
+    function showFatal() {
+      document.getElementById('status').innerHTML =
+        '<div class="error-box">Não foi possível carregar os repositórios agora (limite da API do GitHub). ' +
+        'Veja a lista completa em <a href="https://github.com/' + USER + '?tab=repositories" target="_blank" rel="noopener">github.com/' + USER + '</a>.</div>';
+    }
+
+    function loadData() {
+      var cached = null;
+      try { cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); } catch (e) {}
+      if (cached && Date.now() - cached.ts < CACHE_TTL) {
+        repos = cached.data;
+        renderAll();
+        return;
+      }
+      fetch(API)
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (list) {
+          repos = normalize(list);
+          try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: repos })); } catch (e) {}
+          renderAll();
+        })
+        .catch(function () {
+          if (cached) { repos = cached.data; renderAll(); }
+          else showFatal();
+        });
+    }
+    loadData();
+  })();
+</script>
+</body>
+</html>
