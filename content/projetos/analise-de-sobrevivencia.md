@@ -3,7 +3,7 @@ titulo: Análise de Sobrevivência Aplicada ao Tráfico Humano no Brasil
 subtitulo: Tempo até o resgate de vítimas sob censura intervalar — trabalho aceito no **26º SINAPE** (Simpósio Nacional de Probabilidade e Estatística).
 descricao: Estudo de caso: tempo até o resgate de vítimas de tráfico humano com censura intervalar — Turnbull, GAMLSS e riscos proporcionais (icenReg). Publicado no 26º SINAPE.
 linguagens: R
-tags: Análise de sobrevivência, Censura intervalar, Turnbull, GAMLSS, icenReg, 2025–2026
+tags: Análise de sobrevivência, Censura intervalar, Turnbull, GAMLSS, icenReg
 repo: analise-de-sobrevivencia
 autores: Ana Rosa Almeida do Nascimento, João Victor Lopes Pereira dos Santos, Oilson Alberto Gonzatto Junior e Mirela Teixeira Cazzolato
 rodape: 26º SINAPE

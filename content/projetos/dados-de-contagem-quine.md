@@ -3,7 +3,7 @@ titulo: Modelos de contagem para dias de ausência escolar (dados quine)
 subtitulo: Metodologia para modelar dias de ausência com Poisson, quase-Poisson e binomial negativa, com validação K-fold.
 descricao: Estudo de caso: metodologia de modelos de contagem (Poisson, quase-Poisson e binomial negativa) para dias de ausência escolar com o conjunto quine, em R.
 linguagens: R
-tags: Dados de contagem, Modelos lineares generalizados, Poisson, Quase-Poisson, Binomial negativa, Validação K-fold
+tags: Dados de contagem, Modelos lineares generalizados, Poisson, Quase-Poisson, Binomial negativa, Validação Cruzada, Validação K-fold
 repo: modelos-lineares-generalizados
 autores: Ana Rosa Nascimento
 ---
