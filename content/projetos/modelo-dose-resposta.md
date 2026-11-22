@@ -117,7 +117,7 @@ Os modelos foram ajustados com as ligações logit, probit e cloglog, e os gráf
 
 ##### Estimação pontual das doses letais
 
-Segundo os slides de Cancho, considerando uma função genérica $g$ e uma probabilidade de mortalidade $0 < r < 1$, a dose letal $DL_{100r}$ é tal que $\pi(DL_{100r}) = r$, ou seja, $F_T(DL_{100r}) = r$, de modo que $DL_{100r} = F_T^{-1}(r)$. Assim, com $g(\pi_j) = \beta_0 + \beta_1 \log_2(d_j)$, segue que
+Considerando uma função genérica $g$ e uma probabilidade de mortalidade $0 < r < 1$, a dose letal $DL_{100r}$ é tal que $\pi(DL_{100r}) = r$, ou seja, $F_T(DL_{100r}) = r$, de modo que $DL_{100r} = F_T^{-1}(r)$. Assim, com $g(\pi_j) = \beta_0 + \beta_1 \log_2(d_j)$, segue que
 
 $$
 x_r = \log_2(DL_{100r}) = \log_2(F_T^{-1}(r)) = \frac{g(r) - \beta_0}{\beta_1}

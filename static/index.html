@@ -262,7 +262,9 @@
       var topics = (r.topics || []).slice(0, 3).map(function (t) { return '<span class="topic">' + esc(t) + '</span>'; }).join(' ');
       var extras = '';
       if (DEMO_LINKS[r.name]) extras += '<a class="demo" href="' + DEMO_LINKS[r.name] + '" target="_blank" rel="noopener">▶ Ver demonstração</a>';
-      if (CASE_PAGES[r.name]) extras += '<a class="demo" href="' + CASE_PAGES[r.name] + '">📖 Estudo de caso: metodologia e resultados</a>';
+      (CASE_PAGES[r.name] || []).forEach(function (c, i, all) {
+        extras += '<a class="demo" href="' + c[0] + '">📖 Estudo de caso: ' + (all.length > 1 ? esc(c[1]) : 'metodologia e resultados') + '</a>';
+      });
       return '<article class="card">' +
         '<h3><a href="https://github.com/' + USER + '/' + esc(r.name) + '" target="_blank" rel="noopener">' +
         (featured ? '<span class="star">★</span> ' : '') + esc(r.name) + '</a></h3>' +

@@ -500,8 +500,16 @@ def update_index(pages):
     block = (f'<h2>Estudos de caso</h2>\n  <div class="grid">{cards}</div>' if live else "")
 
     # repo → página (usado pelos cartões gerados via API do GitHub)
-    mapping = ",\n".join(f"      '{p['meta']['repo']}': 'projetos/{p['slug']}/'"
-                         for p in live if p["meta"].get("repo") and "/" not in p["meta"]["repo"])
+    # um repositório pode ter vários estudos: repo → [[url, título], ...]
+    by_repo = {}
+    for p in live:
+        repo = p["meta"].get("repo")
+        if repo and "/" not in repo:
+            by_repo.setdefault(repo, []).append((p["slug"], p["title"]))
+    mapping = ",\n".join(
+        f"      {json.dumps(repo)}: [" +
+        ", ".join(f"[{json.dumps(f'projetos/{s}/')}, {json.dumps(t, ensure_ascii=False)}]" for s, t in items) + "]"
+        for repo, items in by_repo.items())
     case_js = "var CASE_PAGES = {\n" + mapping + "\n    };" if mapping else "var CASE_PAGES = {};"
 
     new, n1 = re.subn(r"(<!-- CASES:START -->).*?(<!-- CASES:END -->)",
