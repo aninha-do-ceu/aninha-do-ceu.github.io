@@ -427,7 +427,6 @@
 
 <script>
   (function () {
-    var RAW_BASE   = 'https://raw.githubusercontent.com/aninha-do-ceu/mapas-disque100-HT/main/';
     var PAGES_BASE = '';
 
     function toURL(base, path) {
@@ -521,42 +520,25 @@
       rest.sort(function (a, b) { return centerDist(a) - centerDist(b); });
       loadFrame(rest[0]);
     }
-    function loadFrame(f, isRetry) {
+    function loadFrame(f) {
       loading = true;
       f.dataset.loading = '1';
-      fetch(toURL(RAW_BASE, f.dataset.src))
-        .then(function (r) {
-          if (!r.ok) throw new Error('HTTP ' + r.status);
-          return r.text();
-        })
-        .then(function (text) {
-          /* Blob como text/html — raw.githubusercontent serve HTML como
-             text/plain, o que faria o iframe mostrar o código-fonte */
-          f.src = URL.createObjectURL(new Blob([text], { type: 'text/html;charset=utf-8' }));
-          f._blob = f.src;
-          f.addEventListener('load', function onl() {
-            f.removeEventListener('load', onl);
-            waitReady(f, function () {
-              injectMapFix(f);
-              fitPlotly(f);
-              hideSpinner(f);
-              f.dataset.done = '1';
-              delete f.dataset.loading;
-              loading = false;
-              pump();
-            });
-          });
-        })
-        .catch(function () {
-          if (!isRetry) {
-            setTimeout(function () { loadFrame(f, true); }, 1500);
-          } else {
-            hideSpinner(f);
-            delete f.dataset.loading;
-            loading = false;
-            pump();
-          }
+      /* O iframe carrega o arquivo real (mesma origem, servido como text/html
+         pelo próprio site). Com um Blob, o navegador pode enviar o pedido dos
+         tiles sem Referer e o OpenStreetMap responde 403 "Access blocked". */
+      f.addEventListener('load', function onl() {
+        f.removeEventListener('load', onl);
+        waitReady(f, function () {
+          injectMapFix(f);
+          fitPlotly(f);
+          hideSpinner(f);
+          f.dataset.done = '1';
+          delete f.dataset.loading;
+          loading = false;
+          pump();
         });
+      });
+      f.src = toURL(PAGES_BASE, f.dataset.src);
     }
     window.addEventListener('scroll', pump, { passive: true });
     window.addEventListener('resize', function () {
@@ -585,23 +567,16 @@
       document.body.style.overflow = 'hidden';
       setTimeout(function () { modal.classList.add('open'); }, 20);
       mClose.focus();
-      fetch(toURL(RAW_BASE, path))
-        .then(function (r) { if (!r.ok) throw 0; return r.text(); })
-        .then(function (text) {
-          if (modal.hidden) return;
-          if (mBlobURL) URL.revokeObjectURL(mBlobURL);
-          mBlobURL = URL.createObjectURL(new Blob([text], { type: 'text/html;charset=utf-8' }));
-          mFrame.src = mBlobURL;
-          mFrame.addEventListener('load', function onl() {
-            mFrame.removeEventListener('load', onl);
-            waitReady(mFrame, function () {
-              injectMapFix(mFrame);
-              fitPlotly(mFrame);
-              mSpinner.classList.remove('show');
-            });
-          });
-        })
-        .catch(function () { mSpinner.classList.remove('show'); });
+      mFrame.addEventListener('load', function onl() {
+        if (mFrame.src === 'about:blank' || mFrame.getAttribute('src') === 'about:blank') return;
+        mFrame.removeEventListener('load', onl);
+        waitReady(mFrame, function () {
+          injectMapFix(mFrame);
+          fitPlotly(mFrame);
+          mSpinner.classList.remove('show');
+        });
+      });
+      mFrame.src = toURL(PAGES_BASE, path);
     }
     function closeModal() {
       if (modal.hidden) return;
