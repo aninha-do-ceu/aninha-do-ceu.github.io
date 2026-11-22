@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galeria de Mapas Interativos — Ana Rosa Nascimento</title>
+<meta name="description" content="Visualizações interativas de dados com Python (Folium e Plotly): tráfico humano (Disque 100), ENEM e análises de componentes principais.">
+<style>
+  :root {
+    --bg: #f6f8fa;
+    --card: #ffffff;
+    --text: #1f2328;
+    --muted: #656d76;
+    --accent: #0969da;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2.5rem 1rem 3rem;
+  }
+  .container { max-width: 880px; margin: 0 auto; }
+  header { margin-bottom: 2rem; }
+  h1 { font-size: 1.75rem; letter-spacing: -0.02em; }
+  .subtitle { color: var(--muted); margin-top: .35rem; font-size: .95rem; }
+  .subtitle a { color: var(--accent); text-decoration: none; }
+  .subtitle a:hover { text-decoration: underline; }
+  .hint { color: var(--muted); font-size: .82rem; margin-top: .4rem; }
+  h2 {
+    font-size: 1.05rem;
+    margin: 2rem 0 .9rem;
+    padding-bottom: .35rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .stack { display: grid; gap: 1.4rem; }
+
+  .map-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .8rem .9rem .9rem;
+  }
+  .map-head { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+  .map-head h3 { font-size: 1rem; font-weight: 600; }
+  .tag {
+    display: inline-block;
+    padding: .05rem .5rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: .74rem;
+  }
+  .tag.folium { background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32; }
+  .tag.plotly { background: #f3e5f5; border-color: #ce93d8; color: #6a1b9a; }
+  .actions { margin-left: auto; display: flex; gap: .4rem; }
+  .actions button, .actions a {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .22rem .55rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--muted);
+    font-size: .78rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .actions button:hover, .actions a:hover { color: var(--accent); border-color: var(--accent); }
+  .desc { color: var(--muted); font-size: .87rem; margin: .25rem 0 .6rem; }
+
+  .map-wrap {
+    position: relative;
+    height: 360px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .map-wrap[data-tall="1"] { height: 480px; }
+  .map-wrap iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    transition: opacity .3s ease;
+    z-index: 2;
+  }
+  .spinner.done { opacity: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  footer {
+    margin-top: 2.5rem;
+    color: var(--muted);
+    font-size: .82rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ---------- Modal ---------- */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 1.25rem;
+    opacity: 0;
+    transition: opacity .18s ease;
+  }
+  .modal.open { opacity: 1; }
+  .modal[hidden] { display: none; }
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(31, 35, 40, .55);
+    backdrop-filter: blur(2px);
+  }
+  .modal-box {
+    position: relative;
+    width: min(1100px, 100%);
+    height: calc(100vh - 2.5rem);
+    max-height: 860px;
+    display: flex;
+    flex-direction: column;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,.25);
+    transform: translateY(10px) scale(.985);
+    transition: transform .18s ease;
+  }
+  .modal.open .modal-box { transform: translateY(0) scale(1); }
+  .modal-head {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .65rem .9rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+  .modal-head h3 {
+    font-size: .95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .modal-actions { margin-left: auto; display: flex; gap: .4rem; }
+  .modal-actions a, .modal-actions button {
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--muted);
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .modal-actions a:hover, .modal-actions button:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .modal-body { position: relative; flex: 1; background: #fff; }
+  .modal-body iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .modal-body .spinner {
+    width: 34px;
+    height: 34px;
+    margin: -17px 0 0 -17px;
+    opacity: 0;
+  }
+  .modal-body .spinner.show { opacity: 1; }
+  @media (max-width: 640px) {
+    .modal { padding: .5rem; }
+    .modal-box { height: calc(100vh - 1rem); border-radius: 10px; }
+    .map-wrap { height: 280px; }
+    .map-wrap[data-tall="1"] { height: 380px; }
+    .actions { width: 100%; margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Galeria de Mapas Interativos</h1>
+    <p class="subtitle">
+      Ana Rosa Nascimento · visualizações construídas em Python (Folium e Plotly) ·
+      <a href="https://github.com/aninha-do-ceu/mapas-disque100-HT" target="_blank" rel="noopener">repositório</a> ·
+      <a href="https://github.com/aninha-do-ceu" target="_blank" rel="noopener">perfil no GitHub</a>
+    </p>
+    <p class="hint">Os mapas carregam aos poucos, conforme você rola a página. Use <strong>Expandir</strong> para ver um mapa em tamanho grande.</p>
+  </header>
+
+  <h2>Tráfico humano — dados do Disque 100</h2>
+  <div class="stack">
+    <article class="map-item">
+      <div class="map-head">
+        <h3>Vítimas por estado de origem (proporção)</h3>
+        <span class="tag folium">Folium</span>
+        <div class="actions">
+          <button class="btn-expand">Expandir</button>
+          <a href="mapas/Mapas%20HT/mapa_vitimas_por_estado_de_origem_proporcao.html" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a>
+        </div>
+      </div>
+      <p class="desc">Distribuição das vítimas por UF de origem, em proporção à população de cada estado.</p>
+      <div class="map-wrap">
+        <div class="spinner" aria-hidden="true"></div>
+        <iframe data-src="mapas/Mapas HT/mapa_vitimas_por_estado_de_origem_proporcao.html" title="Vítimas por estado de origem (proporção)"></iframe>
+      </div>
+    </article>
+
+    <article class="map-item">
+      <div class="map-head">
+        <h3>Vítimas por estado de origem (total)</h3>
+        <span class="tag folium">Folium</span>
+        <div class="actions">
+          <button class="btn-expand">Expandir</button>
+          <a href="mapas/Mapas%20HT/mapa_vitimas_por_estado_de_origem_total.html" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a>
+        </div>
+      </div>
+      <p class="desc">Contagem total de vítimas registradas por UF de origem.</p>
+      <div class="map-wrap">
+        <div class="spinner" aria-hidden="true"></div>
+        <iframe data-src="mapas/Mapas HT/mapa_vitimas_por_estado_de_origem_total.html" title="Vítimas por estado de origem (total)"></iframe>
+      </div>
+    </article>
+
+    <article class="map-item">
+      <div class="map-head">
+        <h3>Vítimas por estado de origem</h3>
+        <span class="tag folium">Folium</span>
+        <div class="actions">
+          <button class="btn-expand">Expandir</button>
+          <a href="mapas/Mapas%20HT/mapa_vitimas_por_estado_de_origem.html" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a>
+        </div>
+      </div>
+      <p class="desc">Mapa coroplético com a distribuição das vítimas por UF de origem.</p>
+      <div class="map-wrap">
+        <div class="spinner" aria-hidden="true"></div>
+        <iframe data-src="mapas/Mapas HT/mapa_vitimas_por_estado_de_origem.html" title="Vítimas por estado de origem"></iframe>
+      </div>
+    </article>
+
+    <article class="map-item">
+      <div class="map-head">
+        <h3>Vítimas por estado de origem (somente migração)</h3>
+        <span class="tag folium">Folium</span>
+        <div class="actions">
+          <button class="btn-expand">Expandir</button>
+          <a href="mapas/Mapas%20HT/mapa_vitimas_por_estado_de_origem_somente_migracao.html" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a>
+        </div>
+      </div>
+      <p class="desc">Distribuição das vítimas considerando apenas casos envolvendo migração interestadual.</p>
+      <div class="map-wrap">
+        <div class="spinner" aria-hidden="true"></div>
+        <iframe data-src="mapas/Mapas HT/mapa_vitimas_por_estado_de_origem_somente_migracao.html" title="Vítimas por estado de origem (somente migração)"></iframe>
+      </div>
+    </article>
+
+    <article class="map-item">
+      <div class="map-head">
+        <h3>Vítimas por estado de destino</h3>
+        <span class="tag folium">Folium</span>
+        <div class="actions">
+          <button class="btn-expand">Expandir</button>
+          <a href="mapas/Mapas%20HT/mapa_vitimas_por_estado_destino.html" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a>
+        </div>
+      </div>
+      <p class="desc">Distribuição das vítimas por UF de destino das denúncias.</p>
+      <div class="map-wrap">
+        <div class="spinner" aria-hidden="true"></div>
+        <iframe data-src="mapas/Mapas HT/mapa_vitimas_por_estado_destino.html" title="Vítimas por estado de destino"></iframe>
+      </div>
+    </article>
+
+    <article class="map-item">
+      <div class="map-head">
+        <h3>Fluxos de migração externa</h3>
+        <span class="tag folium">Folium</span>
+        <div class="actions">
+          <button class="btn-expand">Expandir</button>
+          <a href="mapas/Mapas%20HT/fluxo_de_migracao_externa.html" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a>
+        </div>
+      </div>
+      <p class="desc">Visualização dos fluxos de migração internacional associados às denúncias.</p>
+      <div class="map-wrap">
+        <div class="spinner" aria-hidden="true"></div>
+        <iframe data-src="mapas/Mapas HT/fluxo_de_migracao_externa.html" title="Fluxos de migração externa"></iframe>
+      </div>
+    </article>
+
+    <article class="map-item">
+      <div class="map-head">
+        <h3>Fluxos de migração externa (v2)</h3>
+        <span class="tag folium">Folium</span>
+        <div class="actions">
+          <button class="btn-expand">Expandir</button>
+          <a href="mapas/Mapas%20HT/fluxo_de_migracao_externa2.html" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a>
+        </div>
+      </div>
+      <p class="desc">Versão alternativa da visualização dos fluxos de migração internacional.</p>
+      <div class="map-wrap">
+        <div class="spinner" aria-hidden="true"></div>
+        <iframe data-src="mapas/Mapas HT/fluxo_de_migracao_externa2.html" title="Fluxos de migração externa (v2)"></iframe>
+      </div>
+    </article>
+  </div>
+
+  <h2>Prática em Ciência de Dados — ENEM e PCA</h2>
+  <div class="stack">
+    <article class="map-item">
+      <div class="map-head">
+        <h3>Nota média do ENEM por UF (com evolução)</h3>
+        <span class="tag folium">Folium</span>
+        <div class="actions">
+          <button class="btn-expand">Expandir</button>
+          <a href="mapas/Pr%C3%A1tica%20em%20Ci%C3%AAncia%20de%20Dados/mapa_nota_media_enem_por_uf_com_evolucao.html" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a>
+        </div>
+      </div>
+      <p class="desc">Mapa coroplético com a evolução da nota média do ENEM por estado.</p>
+      <div class="map-wrap">
+        <div class="spinner" aria-hidden="true"></div>
+        <iframe data-src="mapas/Prática em Ciência de Dados/mapa_nota_media_enem_por_uf_com_evolucao.html" title="Nota média do ENEM por UF (com evolução)"></iframe>
+      </div>
+    </article>
+
+    <article class="map-item">
+      <div class="map-head">
+        <h3>Evolução do ENEM por estado (responsivo)</h3>
+        <span class="tag folium">Folium</span>
+        <div class="actions">
+          <button class="btn-expand">Expandir</button>
+          <a href="mapas/Pr%C3%A1tica%20em%20Ci%C3%AAncia%20de%20Dados/mapa_enem_evolucao_estados_responsivo.html" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a>
+        </div>
+      </div>
+      <p class="desc">Visualização responsiva da evolução das notas do ENEM ao longo dos anos.</p>
+      <div class="map-wrap">
+        <div class="spinner" aria-hidden="true"></div>
+        <iframe data-src="mapas/Prática em Ciência de Dados/mapa_enem_evolucao_estados_responsivo.html" title="Evolução do ENEM por estado (responsivo)"></iframe>
+      </div>
+    </article>
+
+    <article class="map-item">
+      <div class="map-head">
+        <h3>PCA 3D interativo</h3>
+        <span class="tag plotly">Plotly</span>
+        <div class="actions">
+          <button class="btn-expand">Expandir</button>
+          <a href="mapas/Pr%C3%A1tica%20em%20Ci%C3%AAncia%20de%20Dados/PCA_3D_interativo.html" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a>
+        </div>
+      </div>
+      <p class="desc">Projeção 3D interativa das componentes principais do conjunto de dados.</p>
+      <div class="map-wrap" data-tall="1">
+        <div class="spinner" aria-hidden="true"></div>
+        <iframe data-src="mapas/Prática em Ciência de Dados/PCA_3D_interativo.html" title="PCA 3D interativo"></iframe>
+      </div>
+    </article>
+
+    <article class="map-item">
+      <div class="map-head">
+        <h3>PCA 3D interativo com clusters (K-means)</h3>
+        <span class="tag plotly">Plotly</span>
+        <div class="actions">
+          <button class="btn-expand">Expandir</button>
+          <a href="mapas/Pr%C3%A1tica%20em%20Ci%C3%AAncia%20de%20Dados/PCA_3D_interativo_clusters_KMeans_cores.html" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a>
+        </div>
+      </div>
+      <p class="desc">Projeção 3D de PCA com observações coloridas pelos clusters identificados via K-means.</p>
+      <div class="map-wrap" data-tall="1">
+        <div class="spinner" aria-hidden="true"></div>
+        <iframe data-src="mapas/Prática em Ciência de Dados/PCA_3D_interativo_clusters_KMeans_cores.html" title="PCA 3D interativo com clusters (K-means)"></iframe>
+      </div>
+    </article>
+  </div>
+
+  <footer>
+    Dados visualizados em mapas construídos com <strong>Python</strong> — Folium (Leaflet/OpenStreetMap) e Plotly.
+    Código disponível no <a href="https://github.com/aninha-do-ceu/mapas-disque100-HT" target="_blank" rel="noopener">GitHub</a>.
+  </footer>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-backdrop"></div>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <h3 id="modal-title">Visualização</h3>
+      <div class="modal-actions">
+        <a id="modal-ext" href="#" target="_blank" rel="noopener" title="Abrir em nova aba" aria-label="Abrir em nova aba">↗</a>
+        <button id="modal-close" aria-label="Fechar" title="Fechar (Esc)">×</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="spinner" aria-hidden="true"></div>
+      <iframe id="modal-frame" title="Visualização interativa"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var RAW_BASE   = 'https://raw.githubusercontent.com/aninha-do-ceu/mapas-disque100-HT/main/';
+    var PAGES_BASE = '';
+
+    function toURL(base, path) {
+      return base + path.split('/').map(encodeURIComponent).join('/');
+    }
+
+    /* ---------- Ajustes visuais dentro dos mapas (injetados via CSS) ----------
+       1. Sem scrollbars no quadro (overflow escondido).
+       2. Legendas fixas à direita: cabem no quadro, com rolagem interna.
+       3. Barras/escalas fixas à esquerda (colorbar): não estouram a largura. */
+    var MAP_CSS =
+      'html, body { overflow: hidden !important; margin: 0 !important; }' +
+      '.js-plotly-plot { width: 100% !important; height: 100% !important; }' +
+      'div[style*="position: fixed"][style*="right:"] {' +
+      '  max-height: calc(100% - 24px) !important;' +
+      '  overflow-y: auto !important;' +
+      '  max-width: min(220px, 45%) !important;' +
+      '  right: 10px !important; bottom: 10px !important;' +
+      '  font-size: 11px !important; line-height: 1.35 !important;' +
+      '  padding: 6px 8px !important;' +
+      '}' +
+      'div[style*="position: fixed"][style*="left:"] {' +
+      '  max-width: calc(100% - 36px) !important;' +
+      '  overflow-x: auto !important;' +
+      '  font-size: 11px !important;' +
+      '}';
+    function injectMapFix(f) {
+      try {
+        var d = f.contentDocument;
+        if (d && d.head && !d.getElementById('map-fix')) {
+          var s = d.createElement('style');
+          s.id = 'map-fix';
+          s.textContent = MAP_CSS;
+          d.head.appendChild(s);
+        }
+      } catch (e) { /* sem acesso ao documento */ }
+    }
+    /* Redimensiona gráficos Plotly exportados com width/height fixos
+       (ex.: 1000×600) para caber exatamente no quadro disponível */
+    function fitPlotly(f) {
+      try {
+        var w = f.contentWindow, d = f.contentDocument;
+        var tries = 0;
+        (function attempt() {
+          var gd = d.querySelector('.js-plotly-plot');
+          if (w.Plotly && gd && gd._fullLayout) {
+            w.Plotly.relayout(gd, {
+              width: d.documentElement.clientWidth,
+              height: d.documentElement.clientHeight
+            });
+            return;
+          }
+          if (tries++ < 40) setTimeout(attempt, 250);
+        })();
+      } catch (e) { /* documento sem Plotly */ }
+    }
+    /* Documento realmente pronto? (iframes blob são mesma origem) */
+    function docReady(f) {
+      try {
+        var d = f.contentDocument;
+        return !!(d && d.readyState === 'complete' && d.body && d.body.children.length);
+      } catch (e) { return false; }
+    }
+    function waitReady(f, cb) {
+      var tries = 0;
+      (function check() {
+        if (docReady(f) || tries++ > 40) { cb(); return; }
+        setTimeout(check, 250);
+      })();
+    }
+
+    /* ---------- Fila de carregamento: um mapa por vez ----------
+       Busca o HTML via fetch (raw.githubusercontent), cria um Blob e
+       só então atribui ao iframe — permite detectar falhas e tentar
+       de novo, além de manter os iframes em mesma origem. */
+    var frames = Array.prototype.slice.call(document.querySelectorAll('iframe[data-src]'));
+    var loading = false;
+
+    function centerDist(el) {
+      var r = el.getBoundingClientRect();
+      return Math.abs((r.top + r.bottom) / 2 - window.innerHeight / 2);
+    }
+    function hideSpinner(f) {
+      var sp = f.parentElement.querySelector('.spinner');
+      if (sp) sp.classList.add('done');
+    }
+    function pump() {
+      if (loading) return;
+      var rest = frames.filter(function (f) { return !f.dataset.done && !f.dataset.loading; });
+      if (!rest.length) return;
+      rest.sort(function (a, b) { return centerDist(a) - centerDist(b); });
+      loadFrame(rest[0]);
+    }
+    function loadFrame(f, isRetry) {
+      loading = true;
+      f.dataset.loading = '1';
+      fetch(toURL(RAW_BASE, f.dataset.src))
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.text();
+        })
+        .then(function (text) {
+          /* Blob como text/html — raw.githubusercontent serve HTML como
+             text/plain, o que faria o iframe mostrar o código-fonte */
+          f.src = URL.createObjectURL(new Blob([text], { type: 'text/html;charset=utf-8' }));
+          f._blob = f.src;
+          f.addEventListener('load', function onl() {
+            f.removeEventListener('load', onl);
+            waitReady(f, function () {
+              injectMapFix(f);
+              fitPlotly(f);
+              hideSpinner(f);
+              f.dataset.done = '1';
+              delete f.dataset.loading;
+              loading = false;
+              pump();
+            });
+          });
+        })
+        .catch(function () {
+          if (!isRetry) {
+            setTimeout(function () { loadFrame(f, true); }, 1500);
+          } else {
+            hideSpinner(f);
+            delete f.dataset.loading;
+            loading = false;
+            pump();
+          }
+        });
+    }
+    window.addEventListener('scroll', pump, { passive: true });
+    window.addEventListener('resize', function () {
+      frames.forEach(function (f) { if (f.dataset.done === '1') fitPlotly(f); });
+    });
+    pump();
+
+    /* ---------- Modal (Expandir) ---------- */
+    var modal    = document.getElementById('modal');
+    var mFrame   = document.getElementById('modal-frame');
+    var mSpinner = modal.querySelector('.modal-body .spinner');
+    var mTitle   = document.getElementById('modal-title');
+    var mExt     = document.getElementById('modal-ext');
+    var mClose   = document.getElementById('modal-close');
+    var lastFocus = null;
+    var mBlobURL = null;
+    var closeTimer = null;
+
+    function openModal(path, title) {
+      if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+      lastFocus = document.activeElement;
+      mTitle.textContent = title;
+      mExt.href = toURL(PAGES_BASE, path);
+      mSpinner.classList.add('show');
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      setTimeout(function () { modal.classList.add('open'); }, 20);
+      mClose.focus();
+      fetch(toURL(RAW_BASE, path))
+        .then(function (r) { if (!r.ok) throw 0; return r.text(); })
+        .then(function (text) {
+          if (modal.hidden) return;
+          if (mBlobURL) URL.revokeObjectURL(mBlobURL);
+          mBlobURL = URL.createObjectURL(new Blob([text], { type: 'text/html;charset=utf-8' }));
+          mFrame.src = mBlobURL;
+          mFrame.addEventListener('load', function onl() {
+            mFrame.removeEventListener('load', onl);
+            waitReady(mFrame, function () {
+              injectMapFix(mFrame);
+              fitPlotly(mFrame);
+              mSpinner.classList.remove('show');
+            });
+          });
+        })
+        .catch(function () { mSpinner.classList.remove('show'); });
+    }
+    function closeModal() {
+      if (modal.hidden) return;
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+      mFrame.src = 'about:blank';
+      closeTimer = setTimeout(function () {
+        modal.hidden = true;
+        mSpinner.classList.remove('show');
+        if (mBlobURL) { URL.revokeObjectURL(mBlobURL); mBlobURL = null; }
+      }, 200);
+      if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+    }
+
+    document.querySelectorAll('.btn-expand').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var item = btn.closest('.map-item');
+        openModal(item.querySelector('iframe').dataset.src, item.querySelector('h3').textContent);
+      });
+    });
+
+    modal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+    mClose.addEventListener('click', closeModal);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.hidden) closeModal();
+    });
+  })();
+</script>
+</body>
+</html>

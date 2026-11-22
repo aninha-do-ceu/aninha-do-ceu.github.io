@@ -36,5 +36,7 @@ Depois de publicar, cadastre o site no Google Search Console e envie `https://an
 
 ## Galeria de mapas
 
-`externos/mapas-disque100-HT/index_galeria_mapas.html` é o `index.html` do repositório
-`mapas-disque100-HT` (usa caminhos relativos para os mapas daquele repo). Não é publicado por este site.
+A galeria é publicada em `/galeria-mapas/` (`static/galeria-mapas/index.html`), junto com os mapas
+copiados do repositório `mapas-disque100-HT` (`static/galeria-mapas/mapas/`). Os links da galeria são
+relativos a essa pasta. Se os mapas mudarem no repositório original, copie a pasta `mapas/` de novo.
+`externos/mapas-disque100-HT/index_galeria_mapas.html` é a cópia original, com links absolutos para o outro repositório, e não é publicada.

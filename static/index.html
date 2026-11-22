@@ -174,7 +174,7 @@
 
   <footer>
     Página gerada dinamicamente a partir da API pública do GitHub ·
-    confira também a <a href="https://aninha-do-ceu.github.io/mapas-disque100-HT/">galeria de mapas interativos</a> ·
+    confira também a <a href="galeria-mapas/">galeria de mapas interativos</a> ·
     código desta página no <a href="https://github.com/aninha-do-ceu/aninha-do-ceu.github.io">GitHub</a>.
   </footer>
 </div>
@@ -223,7 +223,7 @@
 
     /* Links de demonstração (páginas publicadas) */
     var DEMO_LINKS = {
-      'mapas-disque100-HT': 'https://aninha-do-ceu.github.io/mapas-disque100-HT/',
+      'mapas-disque100-HT': 'galeria-mapas/',
       'projeto-disciplina-mlg': 'https://aninha-do-ceu.github.io/projeto-disciplina-mlg/'
     };
 
@@ -259,7 +259,7 @@
 
     function cardHTML(r, featured) {
       var lang = r.language ? '<span class="lang"><span class="dot" style="background:' + (LANG_COLORS[r.language] || '#ccc') + '"></span>' + esc(r.language) + '</span>' : '';
-      var topics = (r.topics || []).slice(0, 3).map(function (t) { return '<span class="topic">' + esc(t) + '</span>'; }).join(' ');
+      var topics = (r.topics || []).map(function (t) { return '<span class="topic">' + esc(t) + '</span>'; }).join(' ');
       var extras = '';
       if (DEMO_LINKS[r.name]) extras += '<a class="demo" href="' + DEMO_LINKS[r.name] + '" target="_blank" rel="noopener">▶ Ver demonstração</a>';
       (CASE_PAGES[r.name] || []).forEach(function (c, i, all) {

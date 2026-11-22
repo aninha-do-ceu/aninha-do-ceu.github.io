@@ -495,7 +495,7 @@ def update_index(pages):
     cards = "".join(
         f'<article class="card"><h3><a href="projetos/{p["slug"]}/">{e(p["title"])}</a></h3>'
         f'<p class="desc">{e(p["subtitle_plain"])}</p>'
-        f'<div class="meta">' + "".join(f'<span class="topic">{e(t)}</span>' for t in (p["langs"] + p["tags"])[:4]) +
+        f'<div class="meta">' + "".join(f'<span class="topic">{e(t)}</span>' for t in (p["langs"] + p["tags"])) +
         '</div></article>' for p in live)
     block = (f'<h2>Estudos de caso</h2>\n  <div class="grid">{cards}</div>' if live else "")
 
