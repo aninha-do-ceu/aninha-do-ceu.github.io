@@ -6,6 +6,7 @@ linguagens: R
 tags: Modelos lineares generalizados, Dados de contagem, Superdispersão, Binomial negativa, Seleção por AIC, Teste da razão de verossimilhanças
 repo: modelos-lineares-generalizados
 autores: Ana Rosa Nascimento
+rascunho: sim
 ---
 
 ## Resumo
