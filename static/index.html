@@ -227,6 +227,11 @@
       'projeto-disciplina-mlg': 'https://aninha-do-ceu.github.io/projeto-disciplina-mlg/'
     };
 
+    /* Artigos publicados (link externo no card) */
+    var ARTICLE_LINKS = {
+      'project-HT': ['https://sol.sbc.org.br/index.php/sbbd_estendido/article/view/44111', 'Ler o artigo']
+    };
+
     /* Páginas de estudo de caso (metodologia, dados e resultados) */
     /* gerado por build-site/build.py a partir dos .md — não edite entre os marcadores */
     /* CASES_MAP:START */
@@ -262,6 +267,7 @@
       var topics = (r.topics || []).map(function (t) { return '<span class="topic">' + esc(t) + '</span>'; }).join(' ');
       var extras = '';
       if (DEMO_LINKS[r.name]) extras += '<a class="demo" href="' + DEMO_LINKS[r.name] + '" target="_blank" rel="noopener">▶ Ver demonstração</a>';
+      if (ARTICLE_LINKS[r.name]) extras += '<a class="demo" href="' + ARTICLE_LINKS[r.name][0] + '" target="_blank" rel="noopener">📄 ' + esc(ARTICLE_LINKS[r.name][1]) + '</a>';
       (CASE_PAGES[r.name] || []).forEach(function (c, i, all) {
         extras += '<a class="demo" href="' + c[0] + '">📖 Estudo de caso: ' + (all.length > 1 ? esc(c[1]) : 'metodologia e resultados') + '</a>';
       });
